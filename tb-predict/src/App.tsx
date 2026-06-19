@@ -2,8 +2,10 @@ import { useState } from "react";
 import type { PatientPayload, PredictResponse } from "./types";
 import { DEFAULT_PATIENT } from "./formConfig";
 import { predict } from "./api";
+import { consolidate } from "./risk";
 import Form from "./components/Form";
 import ResultCard from "./components/ResultCard";
+import ClinicalVerdict from "./components/ClinicalVerdict";
 
 function ComparisonSummary({ data }: { data: PredictResponse }) {
   const lr = data.logistic_regression;
@@ -130,8 +132,8 @@ export default function App() {
         <p className="mb-8 max-w-2xl text-sm leading-relaxed text-slate-500">
           Preencha os dados do paciente e clique em{" "}
           <span className="font-semibold text-brand-dark">Analisar risco</span>{" "}
-          para comparar a predição de dois modelos de Machine Learning —
-          Regressão Logística e Rede Neural.
+          para estimar a chance de abandono do tratamento e receber uma sugestão
+          de conduta.
         </p>
 
         <Form
@@ -174,19 +176,45 @@ export default function App() {
         {/* Results */}
         {result && (
           <section id="results" className="mt-10 scroll-mt-6 space-y-6">
-            <ComparisonSummary data={result} />
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              <ResultCard
-                title="Regressão Logística"
-                subtitle="Modelo estatístico interpretável"
-                result={result.logistic_regression}
-              />
-              <ResultCard
-                title="Rede Neural"
-                subtitle="Modelo de aprendizado profundo"
-                result={result.neural_network}
-              />
-            </div>
+            <ClinicalVerdict data={consolidate(result)} />
+
+            {/* Detalhe técnico para quem quiser auditar a predição. */}
+            <details className="group rounded-2xl bg-white/60 ring-1 ring-mint-100">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-2 rounded-2xl px-5 py-4 text-sm font-semibold text-slate-600 hover:bg-white">
+                <span>Detalhes técnicos — análise por modelo</span>
+                <svg
+                  className="h-4 w-4 transition-transform group-open:rotate-180"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </summary>
+              <div className="space-y-6 px-5 pb-5 pt-1">
+                <p className="text-sm leading-relaxed text-slate-500">
+                  O risco acima é a média de dois modelos de Machine Learning. A
+                  seguir, o resultado de cada um separadamente.
+                </p>
+                <ComparisonSummary data={result} />
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                  <ResultCard
+                    title="Regressão Logística"
+                    subtitle="Modelo estatístico interpretável"
+                    result={result.logistic_regression}
+                  />
+                  <ResultCard
+                    title="Rede Neural"
+                    subtitle="Modelo de aprendizado profundo"
+                    result={result.neural_network}
+                  />
+                </div>
+              </div>
+            </details>
           </section>
         )}
       </main>
