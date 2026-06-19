@@ -114,8 +114,52 @@ Todos os campos do payload são enviados como **string**, exceto `idade_anos`
 (número). Faixas de risco usadas na recomendação: **<40%** baixo · **40–70%**
 moderado · **>70%** alto.
 
+## Implantação no EasyPanel
+
+Cada pasta é um **serviço** independente, com seu próprio `Dockerfile`. Crie
+dois serviços do tipo **App** apontando para este mesmo repositório, mudando
+apenas o *Build Context*:
+
+### Serviço 1 — API (`nano_tuberculose`)
+
+| Campo (EasyPanel)     | Valor                          |
+|-----------------------|--------------------------------|
+| Build Context / Path  | `nano_tuberculose`             |
+| Dockerfile            | `Dockerfile`                   |
+| Porta exposta         | `5000`                         |
+
+Os modelos `.pkl` e `.keras` já vão **embarcados na imagem** (sem necessidade de
+volume). Variáveis de ambiente (opcionais):
+
+| Variável          | Padrão | Descrição                                  |
+|-------------------|--------|--------------------------------------------|
+| `PORT`            | `5000` | Porta em que o gunicorn escuta             |
+| `WEB_CONCURRENCY` | `2`    | Nº de workers do gunicorn (memória ↑)      |
+
+> O CORS já está liberado (`origins: *`), então o frontend pode chamar a API de
+> outro domínio. Anote a **URL pública** desta API (ex.: `https://tb-api.seu-dominio.com`).
+
+### Serviço 2 — Frontend (`tb-predict`)
+
+| Campo (EasyPanel)     | Valor                          |
+|-----------------------|--------------------------------|
+| Build Context / Path  | `tb-predict`                   |
+| Dockerfile            | `Dockerfile`                   |
+| Porta exposta         | `80`                           |
+
+Variável de ambiente **obrigatória** — a URL pública da API (o navegador do
+usuário acessa a API diretamente, então use o domínio público, **não** o nome
+interno do container):
+
+| Variável       | Exemplo                                   |
+|----------------|-------------------------------------------|
+| `VITE_API_URL` | `https://tb-api.seu-dominio.com/predict`  |
+
+A URL é injetada **em runtime** (via `config.js` gerado no boot do container),
+então basta alterar a env e **reiniciar** o serviço — não precisa rebuildar.
+
 ## Stack
 
-- **Frontend:** React 18, Vite 6, TypeScript, TailwindCSS 4
+- **Frontend:** React 18, Vite 6, TypeScript, TailwindCSS 4 — servido por nginx
 - **Backend:** Flask 3, flask-cors, scikit-learn, TensorFlow/Keras, pandas, joblib
-- **Deploy:** Docker / gunicorn
+- **Deploy:** Docker (multi-stage no front) / gunicorn / EasyPanel

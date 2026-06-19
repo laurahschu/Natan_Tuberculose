@@ -1,9 +1,19 @@
 import type { PatientPayload, PredictResponse } from "./types";
 
-// Porta 5001 por padrão (a 5000 é usada pelo AirPlay Receiver no macOS).
-// Pode ser sobrescrita com VITE_API_URL no arquivo .env.
+// Resolução da URL da API, em ordem de prioridade:
+//  1. window.__APP_CONFIG__.API_URL  -> injetado em runtime pelo container
+//     (config.js gerado a partir da env VITE_API_URL). Permite mudar a URL
+//     no EasyPanel sem rebuild.
+//  2. import.meta.env.VITE_API_URL   -> valor de build (.env em dev).
+//  3. http://localhost:5001/predict  -> fallback local (5001 porque a 5000
+//     é usada pelo AirPlay Receiver no macOS).
+const RUNTIME_API_URL =
+  typeof window !== "undefined" ? window.__APP_CONFIG__?.API_URL : undefined;
+
 const API_URL =
-  import.meta.env.VITE_API_URL ?? "http://localhost:5001/predict";
+  RUNTIME_API_URL ??
+  import.meta.env.VITE_API_URL ??
+  "http://localhost:5001/predict";
 
 /**
  * Sends the patient payload to the prediction API.
@@ -24,7 +34,7 @@ export async function predict(
   } catch {
     // Network / CORS / server-down: fetch rejects before we get a response.
     throw new Error(
-      "Não foi possível conectar à API de predição. Verifique se o serviço está ativo em http://localhost:5001.",
+      "Não foi possível conectar à API de predição. Verifique se o serviço está ativo e acessível.",
     );
   }
 
