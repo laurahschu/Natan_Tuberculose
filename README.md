@@ -145,18 +145,24 @@ volume). Variáveis de ambiente (opcionais):
 |-----------------------|--------------------------------|
 | Build Context / Path  | `tb-predict`                   |
 | Dockerfile            | `Dockerfile`                   |
-| Porta exposta         | `80`                           |
+| Porta do domínio      | `80`                           |
 
-Variável de ambiente **obrigatória** — a URL pública da API (o navegador do
-usuário acessa a API diretamente, então use o domínio público, **não** o nome
-interno do container):
+> ⚠️ **Causa de "Not Found":** a porta do **domínio** no EasyPanel precisa bater
+> com a porta em que o nginx escuta. Por padrão o nginx escuta na **80**, então
+> configure o domínio para a porta **80**. Se preferir outra (ex.: o EasyPanel
+> sugere 3000), defina a env `NGINX_PORT` com o mesmo número.
 
-| Variável       | Exemplo                                   |
-|----------------|-------------------------------------------|
-| `VITE_API_URL` | `https://tb-api.seu-dominio.com/predict`  |
+Variáveis de ambiente:
 
-A URL é injetada **em runtime** (via `config.js` gerado no boot do container),
-então basta alterar a env e **reiniciar** o serviço — não precisa rebuildar.
+| Variável       | Obrigatória | Exemplo / Padrão                          |
+|----------------|-------------|-------------------------------------------|
+| `VITE_API_URL` | sim         | `https://tb-api.seu-dominio.com/predict`  |
+| `NGINX_PORT`   | não         | `80` (alinhe com a porta do domínio)      |
+
+`VITE_API_URL` é a URL **pública** da API (o navegador acessa a API diretamente,
+então use o domínio público, **não** o nome interno do container). Ela é injetada
+**em runtime** (via `config.js` gerado no boot), então basta alterar a env e
+**reiniciar** o serviço — não precisa rebuildar.
 
 ## Stack
 
