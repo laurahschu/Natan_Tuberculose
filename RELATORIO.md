@@ -1,6 +1,8 @@
 # Relatório do Trabalho — Predição de Abandono do Tratamento de Tuberculose
 
-**Disciplina:** _(preencher)_ · **Aluno(a):** _(preencher)_ · **Data:** 21/06/2026
+**Disciplina:** MACHINE LEARNING E INTELIGÊNCIA ARTIFICIAL   
+**Alunos(as):** Diego M. Sanchez, Iasmin Souto, Laura Schu, Nicolli Gomes, Ricardo Zanandrea e Wagner Schmitt   
+**Data:** 21/06/2026
 
 ---
 
@@ -62,12 +64,12 @@ a média das probabilidades e mostra se os modelos concordam).
 .
 ├── tb-predict/         # Frontend: React + Vite + TypeScript + TailwindCSS
 └── nano_tuberculose/   # API + modelos de ML
-    ├── app.py                                  # endpoints HTTP (Flask)
-    ├── model_service.py                        # carrega e executa os 2 modelos
-    ├── baseline_pipeline_v3.pkl                # pipeline da Regressão Logística
-    ├── modelo_redeneural_tuberculose_v1.keras  # modelo da Rede Neural
-    ├── test_api.py                             # testes automatizados da API
-    ├── 00_Trabalho_tuberculose_v3.ipynb        # notebook de treino/análise
+    ├── app.py                                              # endpoints HTTP (Flask)
+    ├── model_service.py                                    # carrega e executa os 2 modelos
+    ├── baseline_pipeline_treino2.pkl                       # pipeline da Regressão Logística
+    ├── modelo_redeneural_tuberculose_vFinal_treino2.keras  # modelo da Rede Neural
+    ├── test_api.py                                         # testes automatizados da API
+    ├── Trabalho_tuberculose_final.ipynb                    # notebook de treino/análise
     ├── requirements.txt
     └── Dockerfile / docker-compose.yml
 ```
@@ -82,7 +84,7 @@ tuberculose (`treino.csv`, derivado da base **SINAN** do Ministério da Saúde).
 
 | Valor | Significado |
 |-------|-------------|
-| `0`   | Cura / não abandono |
+| `0`   | Não abandono |
 | `1`   | Abandono do tratamento |
 
 A predição usa **20 variáveis preditoras**. Quase todas são códigos categóricos
@@ -126,7 +128,7 @@ pela rede neural — garantindo que ambos vejam os dados no mesmo formato.
 
 ### 5.1 Regressão Logística (modelo baseline)
 
-- Implementada com **scikit-learn**, salva como `baseline_pipeline_v3.pkl`.
+- Implementada com **scikit-learn**, salva como `baseline_pipeline_treino2.pkl`.
 - Pipeline completo: `pré-processamento → regressão logística`.
 - Serve de **linha de base** (baseline) simples e interpretável.
 
@@ -134,18 +136,18 @@ pela rede neural — garantindo que ambos vejam os dados no mesmo formato.
 
 | Classe | Precisão | Recall | F1 |
 |--------|----------|--------|-----|
-| 0 — Cura | 0,69 | 0,91 | 0,78 |
+| 0 — Não abandono | 0,69 | 0,91 | 0,78 |
 | 1 — Abandono | 0,80 | 0,48 | 0,60 |
 | **Acurácia global** | | | **0,72** |
 
-**Leitura clínica:** o modelo é muito bom em identificar quem **vai se curar**
+**Leitura clínica:** o modelo é muito bom em identificar quem **vai se manter no tratamento**
 (recall 0,91). Para **abandono**, quando ele aponta risco ele costuma acertar
 (precisão 0,80), mas ainda **deixa escapar** parte dos casos reais de abandono
 (recall 0,48). Esse é o ponto que motivou treinar também a rede neural.
 
 ### 5.2 Rede Neural (Keras / TensorFlow)
 
-Salva como `modelo_redeneural_tuberculose_v1.keras`. Arquitetura sequencial
+Salva como `modelo_redeneural_tuberculose_vFinal_treino2.keras`. Arquitetura sequencial
 densa, com regularização para evitar _overfitting_:
 
 ```
@@ -162,7 +164,13 @@ Entrada (nº de features após pré-processamento)
 - **Métrica de treino:** AUC
 - **Regularização:** L2 nas camadas densas, `Dropout` e `BatchNormalization`
 - **Balanceamento:** uso de `class_weight` para compensar que há mais casos de
-  cura do que de abandono na base.
+  não abandono do que de abandono na base.
+
+| Classe | Precisão | Recall | F1 |
+|--------|----------|--------|-----|
+| 0 — Não abandono | 0,72 | 0,56 | 0,63 |
+| 1 — Abandono | 0,82 | 0,90 | 0,86 |
+| **Acurácia global** | | | **0,80** |  
 
 A saída `sigmoid` produz um número entre 0 e 1 interpretado como
 **probabilidade de abandono**; aplica-se o limiar de **0,5** para decidir a
@@ -271,7 +279,7 @@ execução:
 5. `POST /predict` com campos faltando — deve retornar **HTTP 400**.
 
 Cada teste valida o código de status, a presença das chaves esperadas e a
-consistência (ex.: as probabilidades de cura e abandono somam ~100%).
+consistência (ex.: as probabilidades de não abandono e abandono somam ~100%).
 
 ```bash
 python test_api.py                       # testa localhost:5001
