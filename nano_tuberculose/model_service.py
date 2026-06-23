@@ -27,12 +27,14 @@ def _get_tf():
 # ---------------------------------------------------------------------------
 _BASE = os.path.dirname(os.path.abspath(__file__))
 _LOGISTIC_PKL = os.path.join(_BASE, "baseline_pipeline_neural_v3.pkl")
-_NEURAL_KERAS = os.path.join(_BASE, "modelo_redeneural_tuberculose_v1.keras")
+_NEURAL_KERAS = os.path.join(
+    _BASE, "modelo_redeneural_tuberculose_vFinal_treino2.keras"
+)
 
 # Fallback: the notebook also saves under these names
 _LOGISTIC_PKL_FALLBACKS = [
     os.path.join(_BASE, "modelo_tuberculose_v2.pkl"),
-    os.path.join(_BASE, "baseline_pipeline_v3.pkl"),
+    os.path.join(_BASE, "baseline_pipeline_treino2.pkl"),
 ]
 
 
@@ -173,7 +175,7 @@ def predict_logistic(data: dict) -> dict:
     dict
         {
             "probability_abandono": float (0–100),
-            "probability_cura":     float (0–100),
+            "probability_nao_abandono":     float (0–100),
             "prediction":           0 or 1,
             "prediction_label":     "Cura" | "Abandono",
             "model":                "logistic_regression"
@@ -187,7 +189,7 @@ def predict_logistic(data: dict) -> dict:
 
     return {
         "probability_abandono": round(float(proba[1]) * 100, 2),
-        "probability_cura": round(float(proba[0]) * 100, 2),
+        "probability_nao_abandono": round(float(proba[0]) * 100, 2),
         "prediction": pred,
         "prediction_label": "Abandono" if pred == 1 else "Cura",
         "model": "logistic_regression",
@@ -208,7 +210,7 @@ def predict_neural(data: dict) -> dict:
     dict
         {
             "probability_abandono": float (0–100),
-            "probability_cura":     float (0–100),
+            "probability_nao_abandono":     float (0–100),
             "prediction":           0 or 1,
             "prediction_label":     "Cura" | "Abandono",
             "model":                "neural_network"
@@ -223,7 +225,7 @@ def predict_neural(data: dict) -> dict:
 
     return {
         "probability_abandono": round(proba * 100, 2),
-        "probability_cura": round((1 - proba) * 100, 2),
+        "probability_nao_abandono": round((1 - proba) * 100, 2),
         "prediction": pred,
         "prediction_label": "Abandono" if pred == 1 else "Cura",
         "model": "neural_network",

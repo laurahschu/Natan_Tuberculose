@@ -16,9 +16,9 @@ COPY app.py model_service.py ./
 
 # Modelos embarcados na imagem (no EasyPanel não há volume com os arquivos).
 # O model_service procura, nesta ordem de fallback:
-#   baseline_pipeline_neural_v3.pkl -> modelo_tuberculose_v2.pkl -> baseline_pipeline_v3.pkl
-#   modelo_redeneural_tuberculose_v1.keras
-COPY baseline_pipeline_v3.pkl modelo_redeneural_tuberculose_v1.keras ./
+#   baseline_pipeline_neural_v3.pkl -> modelo_tuberculose_v2.pkl -> baseline_pipeline_treino2.pkl
+#   modelo_redeneural_tuberculose_vFinal_treino2.keras
+COPY baseline_pipeline_treino2.pkl modelo_redeneural_tuberculose_vFinal_treino2.keras ./
 
 # Porta (env PORT) e nº de workers configuráveis no EasyPanel.
 ENV PORT=5050 \

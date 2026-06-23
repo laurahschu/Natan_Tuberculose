@@ -31,7 +31,7 @@
         "prediction": 1,
         "prediction_label": "Abandono",
         "probability_abandono": 59.59,
-        "probability_cura": 40.41,
+        "probability_nao_abandono": 40.41,
         "recommendation": "Risco moderado. Monitoramento mais frequente recomendado."
     },
     "neural_network": {
@@ -39,7 +39,7 @@
         "prediction": 1,
         "prediction_label": "Abandono",
         "probability_abandono": 94.93,
-        "probability_cura": 5.07,
+        "probability_nao_abandono": 5.07,
         "recommendation": "Alerta de alto risco! Iniciar busca ativa ou suporte psicossocial."
     }
 }

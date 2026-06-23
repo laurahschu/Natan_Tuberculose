@@ -64,12 +64,12 @@ a média das probabilidades e mostra se os modelos concordam).
 .
 ├── tb-predict/         # Frontend: React + Vite + TypeScript + TailwindCSS
 └── nano_tuberculose/   # API + modelos de ML
-    ├── app.py                                              # endpoints HTTP (Flask)
-    ├── model_service.py                                    # carrega e executa os 2 modelos
-    ├── baseline_pipeline_treino2.pkl                       # pipeline da Regressão Logística
+    ├── app.py                                  # endpoints HTTP (Flask)
+    ├── model_service.py                        # carrega e executa os 2 modelos
+    ├── baseline_pipeline_treino2.pkl                # pipeline da Regressão Logística
     ├── modelo_redeneural_tuberculose_vFinal_treino2.keras  # modelo da Rede Neural
-    ├── test_api.py                                         # testes automatizados da API
-    ├── Trabalho_tuberculose_final.ipynb                    # notebook de treino/análise
+    ├── test_api.py                             # testes automatizados da API
+    ├── Trabalho_tuberculose_final.ipynb        # notebook de treino/análise
     ├── requirements.txt
     └── Dockerfile / docker-compose.yml
 ```
@@ -234,13 +234,13 @@ curl -s -X POST http://localhost:5001/predict \
   "logistic_regression": {
     "prediction_label": "Abandono",
     "probability_abandono": 59.59,
-    "probability_cura": 40.41,
+    "probability_nao_abandono": 40.41,
     "recommendation": "Risco moderado. Monitoramento mais frequente recomendado."
   },
   "neural_network": {
     "prediction_label": "Abandono",
     "probability_abandono": 94.93,
-    "probability_cura": 5.07,
+    "probability_nao_abandono": 5.07,
     "recommendation": "Alerta de alto risco! Iniciar busca ativa ou suporte psicossocial."
   }
 }

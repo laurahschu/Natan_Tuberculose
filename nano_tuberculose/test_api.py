@@ -130,16 +130,18 @@ def test_predict_logistic(base: str) -> bool:
         print(f"         Response: {json.dumps(body, indent=2)}")
         return ok
     ok &= _assert("probability_abandono" in body, "probability_abandono present")
-    ok &= _assert("probability_cura" in body, "probability_cura present")
+    ok &= _assert(
+        "probability_nao_abandono" in body, "probability_nao_abandono present"
+    )
     ok &= _assert("prediction" in body, "prediction present")
     ok &= _assert(body["prediction"] in (0, 1), "prediction is 0 or 1")
     ok &= _assert(body["prediction_label"] in ("Cura", "Abandono"), "label valid")
     ok &= _assert(body["model"] == "logistic_regression", "model correct")
     ok &= _assert("recommendation" in body, "recommendation present")
-    total = body["probability_abandono"] + body["probability_cura"]
+    total = body["probability_abandono"] + body["probability_nao_abandono"]
     ok &= _assert(abs(total - 100) < 0.1, "probs sum to ~100", f"sum={total}")
     print(
-        f"         Probs: abandono={body['probability_abandono']}%  cura={body['probability_cura']}%"
+        f"         Probs: abandono={body['probability_abandono']}%  cura={body['probability_nao_abandono']}%"
     )
     print(
         f"         Label: {body['prediction_label']}  |  rec: {body['recommendation']}"
@@ -157,10 +159,10 @@ def test_predict_neural(base: str) -> bool:
     ok &= _assert("probability_abandono" in body, "probability_abandono present")
     ok &= _assert(body["model"] == "neural_network", "model correct")
     ok &= _assert("recommendation" in body, "recommendation present")
-    total = body["probability_abandono"] + body["probability_cura"]
+    total = body["probability_abandono"] + body["probability_nao_abandono"]
     ok &= _assert(abs(total - 100) < 0.1, "probs sum to ~100", f"sum={total}")
     print(
-        f"         Probs: abandono={body['probability_abandono']}%  cura={body['probability_cura']}%"
+        f"         Probs: abandono={body['probability_abandono']}%  cura={body['probability_nao_abandono']}%"
     )
     print(
         f"         Label: {body['prediction_label']}  |  rec: {body['recommendation']}"

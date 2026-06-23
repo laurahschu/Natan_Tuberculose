@@ -30,11 +30,11 @@ recomendação de conduta.
 └── nano_tuberculose/   # API: Flask + modelo de ML
     ├── app.py                 # endpoints /predict/neural, /health
     ├── model_service.py       # carrega e roda o modelo
-    ├── baseline_pipeline_v3.pkl              # pipeline de pré-processamento das variáveis
-    ├── modelo_redeneural_tuberculose_v1.keras  # modelo da Rede Neural
+    ├── baseline_pipeline_treino2.pkl              # pipeline de pré-processamento das variáveis
+    ├── modelo_redeneural_tuberculose_vFinal_treino2.keras  # modelo da Rede Neural
     ├── test_api.py            # testes da API por linha de comando
     ├── Dockerfile / docker-compose.yml
-    └── 00_Trabalho_tuberculose_v3.ipynb     # notebook de treino/análise
+    └── Trabalho_tuberculose_final.ipynb     # notebook de treino/análise
 ```
 
 ## Como rodar

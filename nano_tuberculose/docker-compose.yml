@@ -7,7 +7,7 @@ services:
       - "5001:5000"
     volumes:
       # Monta apenas os arquivos de modelo que existem na pasta.
-      # O model_service procura baseline_pipeline_v3.pkl na lista de fallback.
-      - ./baseline_pipeline_v3.pkl:/app/baseline_pipeline_v3.pkl:ro
-      - ./modelo_redeneural_tuberculose_v1.keras:/app/modelo_redeneural_tuberculose_v1.keras:ro
+      # O model_service procura baseline_pipeline_treino2.pkl na lista de fallback.
+      - ./baseline_pipeline_treino2.pkl:/app/baseline_pipeline_treino2.pkl:ro
+      - ./modelo_redeneural_tuberculose_vFinal_treino2.keras:/app/modelo_redeneural_tuberculose_vFinal_treino2.keras:ro
     restart: unless-stopped
